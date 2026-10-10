@@ -2213,6 +2213,9 @@ const VOICE = {
     } catch (e) {}
     return 0;
   },
+  busy() {
+    return this.srcs.length > 0;
+  },
   stop() {
     for (const s of this.srcs)
       try {
@@ -4602,7 +4605,8 @@ function kidUpdate(dt) {
   }
   if (KID.state === 'wait' && M.phase === 'fight' && !DIR.job) {
     KID.delay -= dt;
-    if (KID.delay <= 0) nextWord();
+    // 実況がしゃべり終わってから出題する（すぐ聞き始めるので、実況の声を拾わないように）。待つのは最大6秒
+    if (KID.delay <= 0 && (!VOICE.busy() || KID.delay < -6)) nextWord();
   }
   if (KID.state === 'ask') {
     KID.t += dt;
@@ -4616,6 +4620,9 @@ function nextWord() {
   KID.state = 'ask';
   KID.t = 0;
   showCard();
+  autoOK = true;
+  autoTries = 0;
+  autoListen();
 }
 function onCorrect() {
   if (!KID.on || KID.state !== 'ask') return;
@@ -4671,6 +4678,8 @@ function afterAct() {
 /* ================= card UI & speech ================= */
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 let micOK = !!SR,
+  autoOK = true, // 出題と同時に自動で聞き始めてよいか（自動で始められなかったら、その問題はボタン待ち）
+  autoTries = 0, // 1問のうちに自動で聞き直した回数（聞き取りがすぐ切れ続ける端末で、無限に繰り返さないため）
   rec = null,
   listening = false,
   heardTxt = '';
@@ -4726,10 +4735,21 @@ function stopListen() {
   }
   setListening(false);
 }
-function startListen() {
+// 出題中・遊んでいる最中なら、ボタンを押さなくても聞き始める
+function autoListen() {
+  if (!(KID.on && KID.state === 'ask' && mode === 'play' && micOK && autoOK && !rec)) return;
+  if (++autoTries > 30) {
+    autoOK = false;
+    setHeard('マイクを おして よんでね');
+    return;
+  }
+  startListen(true);
+}
+function startListen(auto) {
   if (!KID.on || KID.state !== 'ask') return;
   AU.init();
   if (!micOK) return;
+  if (auto !== true) autoOK = true; // ボタンで始めたら、また自動で聞き続けてよい
   VOICE.stop(); // 実況の声をマイクが拾わないように
   stopListen();
   try {
@@ -4753,22 +4773,35 @@ function startListen() {
     if (matched) onCorrect();
   };
   rec.onerror = e => {
-    if (['not-allowed', 'service-not-allowed', 'audio-capture'].includes(e.error)) micFail();
+    if (!['not-allowed', 'service-not-allowed', 'audio-capture'].includes(e.error)) return;
+    // 自動で始めたときの失敗は、端末がボタン操作なしのマイクを許さないだけかもしれないので、ボタン待ちに戻す
+    if (auto === true) {
+      autoOK = false;
+      setHeard('マイクを おして よんでね');
+    } else micFail();
   };
   rec.onend = () => {
     rec = null;
     setListening(false);
-    if (!matched && KID.on && KID.state === 'ask' && micOK)
-      setHeard(
-        heardTxt ? '「' + heardTxt + '」 に きこえたよ。もういちど!' : 'きこえなかったよ。もういちど おしてね'
-      );
+    if (matched || !KID.on || KID.state !== 'ask' || !micOK) return;
+    // 聞き取りが途中で切れても、続けて聞く（読み間違えても、そのまま言い直せる）
+    if (autoOK) {
+      setTimeout(autoListen, 250);
+      return;
+    }
+    setHeard(
+      heardTxt ? '「' + heardTxt + '」 に きこえたよ。もういちど!' : 'きこえなかったよ。もういちど おしてね'
+    );
   };
   try {
     rec.start();
     setListening(true);
-    setHeard('よんでね…');
+    if (!heardTxt) setHeard('よんでね…');
   } catch (e) {
-    micFail();
+    if (auto === true) {
+      autoOK = false;
+      setHeard('マイクを おして よんでね');
+    } else micFail();
   }
 }
 function sayWord() {
@@ -4780,7 +4813,7 @@ function sayWord() {
     speechSynthesis.speak(u);
   } catch (e) {}
 }
-$('#micBtn').addEventListener('click', startListen);
+$('#micBtn').addEventListener('click', () => startListen());
 $('#okBtn').addEventListener('click', () => {
   AU.init();
   onCorrect();
@@ -5575,6 +5608,7 @@ function pause(on) {
   } else if (!on && mode === 'paused') {
     mode = 'play';
     show(null);
+    autoListen();
   }
 }
 function openHow() {
