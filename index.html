@@ -1956,6 +1956,7 @@ const MV = {
 const AU = {
   c: null,
   on: true,
+  CROWD: 0.065, // 待機中のざわめきの大きさ
   init() {
     try {
       if (!this.c) {
@@ -1970,24 +1971,63 @@ const AU = {
           d = buf.getChannelData(0);
         for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
         this.nb = buf;
-        const src = c.createBufferSource();
-        src.buffer = buf;
-        src.loop = true;
-        const bp = c.createBiquadFilter();
-        bp.type = 'bandpass';
-        bp.frequency.value = 650;
-        bp.Q.value = 0.6;
-        const bp2 = c.createBiquadFilter();
-        bp2.type = 'bandpass';
-        bp2.frequency.value = 1500;
-        bp2.Q.value = 1.2;
+        const loop = (b, off) => {
+          const s = c.createBufferSource();
+          s.buffer = b;
+          s.loop = true;
+          s.start(0, off);
+          return s;
+        };
+        const bq = (type, freq, q) => {
+          const f = c.createBiquadFilter();
+          f.type = type;
+          f.frequency.value = freq;
+          f.Q.value = q;
+          return f;
+        };
+        // 観客のざわめき：「あー」の声の響き（フォルマント）ごとに帯域を分け、
+        // それぞれをゆっくり別々に強弱させて、人の集まりらしい揺らぎを出す
         this.cg = c.createGain();
         this.cg.gain.value = 0;
-        src.connect(bp).connect(this.cg);
-        src.connect(bp2).connect(this.cg);
         this.cg.connect(this.m);
-        src.start();
-        this.cg.gain.setTargetAtTime(0.06, c.currentTime, 1);
+        [
+          [220, 'lowpass', 0.7, 0.5, 0.07],
+          [480, 'bandpass', 1.4, 0.9, 0.13],
+          [900, 'bandpass', 1.6, 0.8, 0.19],
+          [1400, 'bandpass', 2, 0.55, 0.29],
+          [2700, 'bandpass', 2.5, 0.25, 0.41]
+        ].forEach(([freq, type, q, lvl, lf], i) => {
+          const bg = c.createGain();
+          bg.gain.value = lvl;
+          const lfo = c.createOscillator(),
+            dep = c.createGain();
+          lfo.frequency.value = lf;
+          dep.gain.value = lvl * 0.45;
+          lfo.connect(dep).connect(bg.gain);
+          lfo.start(0, i * 0.7);
+          loop(buf, i * 0.37)
+            .connect(bq(type, freq, q))
+            .connect(bg)
+            .connect(this.cg);
+        });
+        // 拍手：ランダムな時刻に短い「パチッ」を並べたループ音
+        const al = c.sampleRate * 4,
+          ab = c.createBuffer(1, al, c.sampleRate),
+          ad = ab.getChannelData(0),
+          cl = (c.sampleRate * 0.014) | 0;
+        for (let n = 0; n < 4 * 45; n++) {
+          const st = (Math.random() * (al - cl)) | 0,
+            amp = 0.3 + Math.random() * 0.7,
+            tau = c.sampleRate * (0.002 + Math.random() * 0.003);
+          for (let i = 0; i < cl; i++) ad[st + i] += (Math.random() * 2 - 1) * amp * Math.exp(-i / tau);
+        }
+        this.ag = c.createGain();
+        this.ag.gain.value = 0;
+        loop(ab, 0)
+          .connect(bq('highpass', 700, 0.7))
+          .connect(this.ag)
+          .connect(this.m);
+        this.cg.gain.setTargetAtTime(this.CROWD, c.currentTime, 1);
       }
       if (this.c.state === 'suspended') this.c.resume();
     } catch (e) {}
@@ -2067,11 +2107,31 @@ const AU = {
   cheer(a) {
     if (!this.c) return;
     const t = this.c.currentTime,
-      gg = this.cg.gain;
-    gg.cancelScheduledValues(t);
-    gg.setValueAtTime(gg.value, t);
-    gg.linearRampToValueAtTime(0.06 + 0.24 * a, t + 0.15);
-    gg.setTargetAtTime(0.06, t + 0.6, 0.9);
+      ramp = (g, to, up, hold, tau, base) => {
+        g.cancelScheduledValues(t);
+        g.setValueAtTime(g.value, t);
+        g.linearRampToValueAtTime(to, t + up);
+        g.setTargetAtTime(base, t + up + hold, tau);
+      };
+    ramp(this.cg.gain, this.CROWD + 0.14 * a, 0.15, 0.45, 0.9, this.CROWD);
+    ramp(this.ag.gain, 0.38 * a, 0.3, 0.7, 1.1, 0);
+    // 大技では「おおー」と声が持ち上がる
+    if (a >= 0.9) {
+      const s = this.c.createBufferSource(),
+        f = this.c.createBiquadFilter(),
+        gn = this.c.createGain();
+      s.buffer = this.nb;
+      f.type = 'bandpass';
+      f.Q.value = 2.5;
+      f.frequency.setValueAtTime(420, t);
+      f.frequency.exponentialRampToValueAtTime(760, t + 0.7);
+      gn.gain.setValueAtTime(0.001, t);
+      gn.gain.exponentialRampToValueAtTime(0.3 * a, t + 0.25);
+      gn.gain.exponentialRampToValueAtTime(0.001, t + 1.8);
+      s.connect(f).connect(gn).connect(this.m);
+      s.start(t, Math.random());
+      s.stop(t + 1.9);
+    }
   },
   ui() {
     this.tn(880, 0.06, 'square', 0.05, 880);
@@ -2082,6 +2142,27 @@ const AU = {
   boo() {
     this.tn(330, 0.3, 'triangle', 0.2, 220);
     this.tn(262, 0.45, 'triangle', 0.2, 170, 0.18);
+  }
+};
+
+/* ================= ring announcer (speech synthesis) ================= */
+// 端末の読み上げ音声でリングアナの実況をする。マイクで聞く前には必ず stop() する
+const VOICE = {
+  say(text, o = {}) {
+    if (!AU.on || !window.speechSynthesis) return;
+    try {
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'ja-JP';
+      u.rate = o.rate || 1.15;
+      u.pitch = o.pitch || 1.1;
+      if (!o.queue) speechSynthesis.cancel();
+      speechSynthesis.speak(u);
+    } catch (e) {}
+  },
+  stop() {
+    try {
+      if (window.speechSynthesis) speechSynthesis.cancel();
+    } catch (e) {}
   }
 };
 
@@ -3695,6 +3776,8 @@ function endMatch(Wn, how, label) {
   AU.bell(3);
   AU.cheer(1.2);
   addBanner(label, '', 1.9, 'fin');
+  if (M.kid)
+    VOICE.say(Wn === P1 ? `きまったー! しょうしゃ、${Wn.def.kana}!` : 'おしい! つぎは きっと かてるよ!');
 }
 
 /* ================= effects ================= */
@@ -4366,6 +4449,12 @@ function runAction(a, o, name, target, cb) {
     keep: false
   };
   if (ACTNAME[name] && name !== 'finisher') addBanner(ACTNAME[name], '', 1.1, 'move');
+  if (M.kid && a === P1 && ACTNAME[name])
+    VOICE.say(
+      name === 'finisher'
+        ? `ひっさつわざ! ${a.def.finKana}!`
+        : `${pick(['でたー!', 'いったー!', 'ここで'])} ${ACTNAME[name]}!`
+    );
 }
 function updDirector(dt) {
   for (const F of M.F) {
@@ -4500,6 +4589,7 @@ function onMiss(reason) {
   KID.ng.push(KID.word);
   KID.streak = 0;
   AU.boo();
+  VOICE.say(pick(['おっと、あいての はんげき!', 'あいての こうげきだ!']));
   addBanner(
     reason === 'time' ? 'じかんぎれ! あいての こうげき!' : 'パス! あいての こうげき!',
     '',
@@ -4581,6 +4671,7 @@ function startListen() {
   if (!KID.on || KID.state !== 'ask') return;
   AU.init();
   if (!micOK) return;
+  VOICE.stop(); // 実況の声をマイクが拾わないように
   stopListen();
   try {
     rec = new SR();
@@ -4689,9 +4780,13 @@ function newMatch(pi, ci, lv, isDemo, kid) {
   addBanner(
     isDemo ? 'DEMO' : kid ? 'ひらがなプロレス' : '1本勝負',
     kanaUI() ? `${a.def.kana}　VS　${b.def.kana}` : `${a.def.name}　VS　${b.def.name}`,
-    1.7,
+    kid ? 4.4 : 1.7,
     'intro'
   );
+  if (kid) {
+    VOICE.say(`あかコーナー、${a.def.kana}!`, { rate: 0.95, pitch: 0.9 });
+    VOICE.say(`あおコーナー、${b.def.kana}!`, { rate: 0.95, pitch: 0.9, queue: true });
+  }
 }
 function startDemo() {
   const i = (Math.random() * 4) | 0;
@@ -4717,11 +4812,13 @@ function step(dt) {
     b.ai.update(dt);
   }
   if (M.phase === 'intro') {
-    if (M.t > 1.2 && !M.bellRung) {
+    // 子ども版は選手コールのぶん、ゴングまで長く待つ
+    const bellT = M.kid ? 4.2 : 1.2;
+    if (M.t > bellT && !M.bellRung) {
       M.bellRung = true;
       AU.bell(1);
     }
-    if (M.t > 1.7) {
+    if (M.t > bellT + 0.5) {
       M.phase = 'fight';
       addBanner('ファイト!', '', 0.8, 'go');
     }
@@ -5411,6 +5508,7 @@ function pause(on) {
   if (on && mode === 'play') {
     mode = 'paused';
     stopListen();
+    VOICE.stop();
     show('pause');
   } else if (!on && mode === 'paused') {
     mode = 'play';
@@ -5460,6 +5558,7 @@ $('#gfxBtn').addEventListener('click', () => {
 });
 $('#sndBtn').addEventListener('click', () => {
   AU.set(!AU.on);
+  if (!AU.on) VOICE.stop();
   $('#sndBtn').textContent = 'おと：' + (AU.on ? 'ON' : 'OFF');
 });
 document.addEventListener('visibilitychange', () => {
