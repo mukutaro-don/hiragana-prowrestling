@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="theme-color" content="#08090d" />
-    <title>ひらがなプロレス</title>
+    <title>プロレスラー・りくの特訓</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -908,6 +908,348 @@ button:focus-visible {
     animation: none;
   }
 }
+
+/* ---- タイトルの2段ロゴ ---- */
+.logo small {
+  display: block;
+  font-size: 0.32em;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.08em;
+}
+
+/* ---- 選択画面：なにで たたかう？ ---- */
+#kinds {
+  width: 100%;
+  max-width: 1100px;
+  display: grid;
+  grid-template-columns: auto repeat(5, minmax(0, 1fr));
+  gap: min(1.2vw, 10px);
+  align-items: stretch;
+}
+#kinds .lbl {
+  align-self: center;
+  font-family: var(--f-kid);
+  font-weight: 900;
+  font-size: 13px;
+  line-height: 1.25;
+  color: var(--gold);
+}
+.kb {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  padding: 4px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  min-width: 0;
+  font-family: var(--f-kid);
+  line-height: 1.25;
+}
+.kb b {
+  font-size: clamp(14px, 4.2vh, 18px);
+}
+.kb span,
+.kb i {
+  font-style: normal;
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+.kb span {
+  color: #fff;
+}
+.kb i {
+  color: var(--gold);
+}
+.kb.on {
+  border-color: var(--gold);
+  background: #2b2510;
+}
+#dinfo {
+  width: 100%;
+  max-width: 1100px;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 6px 12px;
+  border: 2px solid var(--gold);
+  border-radius: 10px;
+  background: #2b2510;
+  font-family: var(--f-kid);
+  font-weight: 700;
+  font-size: clamp(13px, 3.8vh, 16px);
+}
+#dinfo em {
+  font-style: normal;
+  color: var(--gold);
+}
+#dinfo small {
+  display: block;
+  font-size: 11px;
+  color: var(--dim);
+}
+
+/* ---- 試合中：かず・もじ・かたち・きおく の出題パネル ---- */
+#kid.drill #card,
+#kid.drill #micNote,
+#kid:not(.drill) #drill {
+  display: none;
+}
+#drill {
+  position: absolute;
+  left: 50%;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
+  transform: translate(-50%, 135%);
+  width: min(94vw, 860px);
+  height: min(44vh, 250px);
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.5fr);
+  gap: 12px;
+  align-items: center;
+  padding: 10px 14px 12px;
+  box-sizing: border-box;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #fffaf0, #f1e6cf);
+  border: 4px solid #1d3b8c;
+  box-shadow:
+    0 7px 0 #0e1f52,
+    0 12px 30px rgba(0, 0, 0, 0.5);
+  pointer-events: auto;
+  transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.15);
+  color: #1a1a1a;
+  font-family: var(--f-kid);
+}
+#kid.ask #drill {
+  transform: translate(-50%, 0);
+}
+#dq {
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.dhead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#dPrompt {
+  margin: 0;
+  word-break: keep-all; /* 分かち書きの空白でだけ改行する */
+  font-weight: 900;
+  font-size: clamp(14px, 4.6vh, 22px);
+  line-height: 1.3;
+  text-align: center;
+}
+#dSay {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  background: #1d3b8c;
+  color: #fff;
+  border-radius: 10px;
+  padding: 5px 7px;
+  box-shadow: 0 3px 0 #0e1f52;
+  font-family: var(--f-kid);
+}
+#dSay svg {
+  width: 22px;
+  height: 22px;
+  fill: #fff;
+  stroke: #fff;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+#dSay span {
+  font-size: 10px;
+  font-weight: 900;
+}
+#dStage:empty {
+  display: none;
+}
+#dStage .target .shp {
+  width: min(16vh, 76px);
+  height: min(16vh, 76px);
+}
+#dFb {
+  margin: 0;
+  min-height: 1.3em;
+  font-weight: 900;
+  font-size: clamp(12px, 3.6vh, 16px);
+  color: #c4141c;
+  text-align: center;
+}
+/* 十の枠 */
+.frame {
+  display: grid;
+  grid-template-columns: repeat(5, min(7vh, 34px));
+  gap: 3px;
+  padding: 4px;
+  background: #1d3b8c;
+  border-radius: 8px;
+}
+.frame i {
+  aspect-ratio: 1;
+  background: #fff;
+  border-radius: 4px;
+  display: grid;
+  place-items: center;
+}
+.frame i.on::after {
+  content: '';
+  width: 72%;
+  height: 72%;
+  border-radius: 50%;
+  background: #e5484d;
+}
+/* きおく：何こ押したか */
+.seqdots {
+  display: flex;
+  gap: 8px;
+}
+.seqdots span {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 3px solid #1d3b8c;
+  background: #fff;
+}
+.seqdots span.on {
+  background: #1d3b8c;
+}
+/* 選択肢ボタン（大きく。最大4つを1列に） */
+#dChoices {
+  height: 100%;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(var(--n, 3), minmax(0, 1fr));
+  gap: 10px;
+  align-items: center;
+}
+#dChoices.n2 {
+  --n: 2;
+}
+#dChoices.n3 {
+  --n: 3;
+}
+#dChoices.n4 {
+  --n: 4;
+}
+.dch {
+  height: min(30vh, 150px);
+  min-height: 80px;
+  border-radius: 16px;
+  background: #fff;
+  border: 4px solid #c9b48a;
+  box-shadow: 0 5px 0 #a8946a;
+  display: grid;
+  place-items: center;
+  color: #111;
+  transition: transform 0.1s;
+}
+.dch:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 #a8946a;
+}
+.dch .num {
+  font-family: var(--f-disp);
+  font-size: min(15vh, 64px);
+  line-height: 1;
+}
+.dch .kana {
+  font-family: 'Klee One', var(--f-kid);
+  font-weight: 600;
+  font-size: min(17vh, 76px);
+  line-height: 1;
+}
+.dch .shp {
+  width: min(18vh, 84px);
+  height: min(18vh, 84px);
+}
+.dch.ok {
+  border-color: #1fbf75;
+  background: #e3fff0;
+}
+.dch.no {
+  opacity: 0.35;
+}
+.dch.hint {
+  border-color: #ffc53d;
+  animation: hintGlow 0.5s ease-in-out infinite alternate;
+}
+@keyframes hintGlow {
+  to {
+    box-shadow:
+      0 5px 0 #a8946a,
+      0 0 0 6px rgba(255, 197, 61, 0.8);
+  }
+}
+.dch.pad {
+  border-color: rgba(0, 0, 0, 0.25);
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.35);
+}
+.dch.pad.lit {
+  filter: brightness(1.45);
+  transform: scale(1.06);
+  box-shadow:
+    0 0 0 6px #fff,
+    0 0 28px 8px rgba(255, 255, 255, 0.9);
+}
+.dch.pad:disabled {
+  opacity: 1;
+}
+
+/* ---- 結果画面のベルト ---- */
+#rWords:has(.belt) {
+  align-items: center;
+}
+#rWords .belt svg {
+  width: min(30vh, 140px);
+  height: auto;
+  display: block;
+}
+
+/* ---- おうちのかたへ：記録 ---- */
+#recs h4 {
+  margin: 4px 0;
+  font-size: 14px;
+}
+#recs table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+#recs th,
+#recs td {
+  border-bottom: 1px solid var(--line);
+  padding: 4px 6px;
+  text-align: left;
+}
+#recs th {
+  color: var(--dim);
+  font-weight: 700;
+}
+#resetBox {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 8px;
+  font-size: 12px;
+}
+.ghost.danger {
+  border-color: var(--red);
+  color: #ff8a8f;
+}
 </style>
   </head>
   <body>
@@ -938,23 +1280,41 @@ button:focus-visible {
           <div id="tbar" hidden><span></span></div>
         </div>
         <p id="micNote" hidden>この画面ではマイクが使えません。読めたら おうちの人が ⭕ を押してください</p>
+        <div id="drill">
+          <div id="dq">
+            <div class="dhead">
+              <p id="dPrompt"></p>
+              <button id="dSay" aria-label="もういちど きく">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 9v6h4l5 4V5L8 9z" />
+                  <path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" fill="none" /></svg
+                ><span>もういちど</span>
+              </button>
+            </div>
+            <div id="dStage"></div>
+            <p id="dFb" aria-live="polite"></p>
+          </div>
+          <div id="dChoices"></div>
+        </div>
         <button id="pauseBtn" aria-label="いちじていし">II</button>
       </div>
 
       <section id="title" class="screen">
-        <p class="sub kidsub">こえで わざを だせ!</p>
-        <h1 class="logo">ひらがなプロレス</h1>
+        <p class="sub kidsub">よんで かぞえて わざを だせ!</p>
+        <h1 class="logo"><small>プロレスラー・りくの</small>とっくん</h1>
         <button class="start" id="startBtn">タップして はじめる</button>
         <button class="ghost" id="howBtn1">おうちのかたへ</button>
       </section>
 
       <section id="select" class="screen" hidden>
         <header>
-          <h2>レスラーと レベルを えらんでね</h2>
+          <h2>レスラーと しゅもくを えらんでね</h2>
           <button class="ghost" id="howBtn2">おうちのかたへ</button>
         </header>
         <div id="cards"></div>
+        <div id="kinds"></div>
         <div id="levels"></div>
+        <p id="dinfo" hidden></p>
         <footer>
           <div class="seg" id="lim">
             <span class="lbl">じかん</span><button data-t="0">なし</button
@@ -973,7 +1333,7 @@ button:focus-visible {
           <p id="rTime" class="hint"></p>
           <div class="row">
             <button class="cta" id="againBtn">もういっかい</button
-            ><button class="ghost" id="selBtn">レベルを かえる</button
+            ><button class="ghost" id="selBtn">えらびなおす</button
             ><button class="ghost" id="titleBtn">タイトル</button>
           </div>
         </div>
@@ -989,7 +1349,7 @@ button:focus-visible {
             ><button class="ghost" id="gfxBtn">がしつ：レトロ</button>
           </div>
           <div class="row">
-            <button class="ghost" id="selBtn2">レベルを かえる</button
+            <button class="ghost" id="selBtn2">えらびなおす</button
             ><button class="ghost" id="titleBtn2">タイトルへ</button>
           </div>
         </div>
@@ -1001,17 +1361,25 @@ button:focus-visible {
           <dl>
             <dt>あそびかた</dt>
             <dd>
-              画面に出たひらがなを、赤いマイクボタンを押してから声に出して読みます。正しく読めると自分のレスラーが技を出し、相手の体力を0にすると勝ちです。
+              レスラーと種目を選んで試合をします。問題に正解すると自分のレスラーが技を出し、相手の体力を0にすると勝ちです。1日5〜10分、1〜2試合が目安です。
             </dd>
-            <dt>レベル</dt>
+            <dt>種目</dt>
+            <dd>
+              よむ＝画面のひらがなを声に出して読む（音声認識）／かず＝10のまとまり（十の枠）で数を見る力／もじ＝音とひらがなの対応／かたち＝見分ける力／きおく＝聞いたり見たりしたことを順番に覚える力（指示を聞いて動く授業の土台）。きおくは光と同時に色の名前も読み上げ、目と耳の両方で覚えられるようにしています。
+            </dd>
+            <dt>かず・もじ<br />かたち・きおく</dt>
+            <dd>
+              画面のボタンをタップして答えます。問いはすべて読み上げます。時間制限はなく、まちがえても相手は攻撃しません。2回まちがえると答えを光らせて次の問題へ進みます。レベル（★1〜3）は自動で変わり、3問つづけて一発正解で上がり、2問つづけてつまずくと下がります。勝つと種目ごとのベルトが1つ増えます。
+            </dd>
+            <dt>よむの<br />レベル</dt>
             <dd>
               1：2文字　2：3〜4文字　3：濁音・半濁音　4：小さい「っ」「ゃゅょ」・のばす音　5：長いことば。レベルが上がるほど出る技が大きくなります。
             </dd>
             <dt>ひっさつわざ</dt>
-            <dd>3回つづけて読めると必殺技が出ます。</dd>
+            <dd>3回つづけて正解すると必殺技が出ます（かず・もじ・かたち・きおくは一発正解が3回つづいたとき）。</dd>
             <dt>ボタン</dt>
-            <dd>ヒント＝絵を表示　おてほん＝読み上げ　パス＝次のことばへ（相手の攻撃が入ります）</dd>
-            <dt>じかん</dt>
+            <dd>（よむ）ヒント＝絵を表示　おてほん＝読み上げ　パス＝次のことばへ（相手の攻撃が入ります）</dd>
+            <dt>じかん（よむ）</dt>
             <dd>
               「なし」なら負けることはありません。「30びょう」「15びょう」では時間切れで相手が攻撃します。
             </dd>
@@ -1023,6 +1391,22 @@ button:focus-visible {
             <dt>キーボード</dt>
             <dd>スペース＝マイク、Enter＝⭕、P＝一時停止</dd>
           </dl>
+          <div id="recs">
+            <h4>記録（かず・もじ・かたち・きおく）</h4>
+            <table>
+              <thead>
+                <tr>
+                  <th>種目</th>
+                  <th>レベル</th>
+                  <th>問題数</th>
+                  <th>一発正解</th>
+                  <th>ベルト</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+            <div id="resetBox"></div>
+          </div>
           <div class="row"><button class="cta" id="howClose">とじる</button></div>
         </div>
       </section>
@@ -4476,7 +4860,7 @@ addEventListener('keydown', e => {
     e.preventDefault();
     startListen();
   }
-  if (mode === 'play' && e.code === 'Enter') {
+  if (mode === 'play' && e.code === 'Enter' && KID.kind === 'yomu') {
     e.preventDefault();
     onCorrect();
   }
@@ -4918,12 +5302,14 @@ const KID = {
   ok: [],
   ng: [],
   delay: 0,
-  lastMv: ''
+  lastMv: '',
+  kind: 'yomu' // 種目（KINDS の id。よむ以外は 12-drills.js がタップで出題する）
 };
-function kidStart(lv, limit) {
+function kidStart(lv, limit, kind = 'yomu') {
   Object.assign(KID, {
     pend: null,
     on: true,
+    kind,
     lv,
     limit,
     state: 'wait',
@@ -4937,10 +5323,13 @@ function kidStart(lv, limit) {
     lastMv: ''
   });
   DIR.job = null;
+  if (typeof drillReset === 'function') drillReset();
+  $('#kid').classList.toggle('drill', kind !== 'yomu');
   hideCard();
 }
 function kidUpdate(dt) {
   if (!KID.on || !M.kid) return;
+  if (KID.kind !== 'yomu') drillUpdate(dt);
   if (KID.pend) {
     KID.pend.t -= dt;
     if (KID.pend.t <= 0) {
@@ -4961,6 +5350,7 @@ function kidUpdate(dt) {
   }
 }
 function nextWord() {
+  if (KID.kind !== 'yomu') return drillAsk();
   if (!KID.queue.length) KID.queue = shuffle(WORDS[KID.lv].slice());
   KID.word = KID.queue.pop();
   KID.state = 'ask';
@@ -5083,7 +5473,8 @@ function stopListen() {
 }
 // 出題中・遊んでいる最中なら、ボタンを押さなくても聞き始める
 function autoListen() {
-  if (!(KID.on && KID.state === 'ask' && mode === 'play' && micOK && autoOK && !rec)) return;
+  if (!(KID.on && KID.kind === 'yomu' && KID.state === 'ask' && mode === 'play' && micOK && autoOK && !rec))
+    return;
   if (++autoTries > 30) {
     autoOK = false;
     setHeard('マイクを おして よんでね');
@@ -5092,7 +5483,7 @@ function autoListen() {
   startListen(true);
 }
 function startListen(auto) {
-  if (!KID.on || KID.state !== 'ask') return;
+  if (!KID.on || KID.kind !== 'yomu' || KID.state !== 'ask') return;
   AU.init();
   if (!micOK) return;
   if (auto !== true) autoOK = true; // ボタンで始めたら、また自動で聞き続けてよい
@@ -5162,13 +5553,493 @@ function sayWord() {
 $('#micBtn').addEventListener('click', () => startListen());
 $('#okBtn').addEventListener('click', () => {
   AU.init();
-  onCorrect();
+  if (KID.kind === 'yomu') onCorrect();
 });
 $('#hintBtn').addEventListener('click', () => {
   $('#pic').hidden = !$('#pic').hidden;
 });
 $('#sayBtn').addEventListener('click', sayWord);
 $('#passBtn').addEventListener('click', () => onMiss('pass'));
+
+/* ---- js/12-drills.js ---- */
+/* ================= drills（ひらめきリングから統合した4種目） =================
+ * かず・もじ・かたち・きおく。タップで答え、正解すると onCorrect()（12-kid.js）で技が出る。
+ * ひらめきリングの決まりをそのまま守る:
+ *   - 時間制限なし。まちがえても相手は攻撃しない（罰しない）
+ *   - 2回まちがえたら答えを光らせて次の問題へ
+ *   - レベル★1〜3は自動調整（一発正解が3問つづけば上がり、つまずきが2問つづけば下がる）
+ *   - 問いはすべて読み上げる（字が読めない前提）
+ * 待ち時間は setTimeout ではなく dLater()（ゲーム内時間で進むので、一時停止中は止まる）。
+ * 記録は localStorage 'bk_drill' = { [種目id]: { level, belts, tries（問題数）, firstOk（一発正解数） } }。
+ * ※ キー名やデータの形を変えると子どもの記録が消える。
+ */
+const DRILL_CFG = { levelMax: 3, upStreak: 3, downMiss: 2, missReveal: 2, revealT: 2.2 };
+// 種目のレベル(★) → 技の強さ（LV の何番の技とダメージを使うか）
+const DRILL_LV = { 1: 2, 2: 3, 3: 4 };
+// 選択画面の並び。よむ＝従来のひらがな読み（音声認識）
+const KINDS = [
+  { id: 'yomu', name: 'よむ', sub: 'こえで よむ', skill: 'ひらがなを声に出して読む' },
+  { id: 'kazu', name: 'かず', sub: 'いくつ かな', skill: '10のまとまりで数を見る' },
+  { id: 'moji', name: 'もじ', sub: 'きいて えらぶ', skill: '音とひらがなの対応' },
+  { id: 'katachi', name: 'かたち', sub: 'よく みる', skill: '形を見分ける' },
+  { id: 'kioku', name: 'きおく', sub: 'じゅんばんに', skill: '見たこと・聞いたことを順番に覚える' }
+];
+const kindOf = id => KINDS.find(k => k.id === id) || KINDS[0];
+
+/* ---------- 記録 ---------- */
+let drillProg = {};
+try {
+  drillProg = JSON.parse(localStorage.getItem('bk_drill') || '{}') || {};
+} catch (e) {}
+const DP = id => drillProg[id] || (drillProg[id] = { level: 1, belts: 0, tries: 0, firstOk: 0 });
+const saveDrill = () => {
+  try {
+    localStorage.setItem('bk_drill', JSON.stringify(drillProg));
+  } catch (e) {}
+};
+const stars = lv => '★'.repeat(lv) + '☆'.repeat(DRILL_CFG.levelMax - lv);
+
+/* ---------- 読み上げ（問いの文。ひらがな＋分かち書きで渡す） ---------- */
+function say(text) {
+  try {
+    if (!window.speechSynthesis || !text) return;
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'ja-JP';
+    u.rate = 0.85;
+    u.pitch = 1.1;
+    speechSynthesis.speak(u);
+  } catch (e) {}
+}
+
+/* ---------- 絵（SVG。画像ファイルは使わない） ---------- */
+const SHAPE_NAME = { maru: 'まる', sankaku: 'さんかく', shikaku: 'しかく', hoshi: 'ほし', haato: 'ハート' };
+const SHAPES = Object.keys(SHAPE_NAME);
+const SHAPE_COLORS = ['#e5484d', '#3d7bfd', '#f5c542', '#3ecf8e'];
+const SHAPE_PATHS = {
+  maru: '<circle cx="50" cy="50" r="40"/>',
+  sankaku: '<polygon points="50,10 92,86 8,86"/>',
+  shikaku: '<rect x="14" y="14" width="72" height="72" rx="6"/>',
+  hoshi: '<polygon points="50,6 61,38 95,38 67,58 78,92 50,71 22,92 33,58 5,38 39,38"/>',
+  haato:
+    '<path d="M50 88C20 66 6 50 6 32 6 18 17 8 30 8c10 0 16 6 20 14 4-8 10-14 20-14 13 0 24 10 24 24 0 18-14 34-44 56z"/>'
+};
+const shapeSvg = (kind, color, cls = 'shp') =>
+  `<svg class="${cls}" viewBox="0 0 100 100" fill="${color}" stroke="rgba(0,0,0,.28)" stroke-width="3" stroke-linejoin="round" aria-hidden="true">${SHAPE_PATHS[kind]}</svg>`;
+// 十の枠。n 個のマスに ● を置く
+function tenFrame(n) {
+  let h = `<div class="frame" aria-label="${n}こ">`;
+  for (let i = 0; i < 10; i++) h += `<i class="${i < n ? 'on' : ''}"></i>`;
+  return h + '</div>';
+}
+// チャンピオンベルト（結果画面）
+const BELT_SVG =
+  '<svg viewBox="0 0 200 100" aria-hidden="true"><rect x="0" y="30" width="200" height="40" rx="10" fill="#7a5a00"/><rect x="0" y="36" width="200" height="4" fill="#b38a1c"/><rect x="0" y="60" width="200" height="4" fill="#b38a1c"/><ellipse cx="100" cy="50" rx="56" ry="46" fill="#f5c542" stroke="#b38a1c" stroke-width="6"/><ellipse cx="100" cy="50" rx="38" ry="30" fill="none" stroke="#b38a1c" stroke-width="3"/><circle cx="100" cy="50" r="16" fill="#e5484d"/><circle cx="34" cy="50" r="12" fill="#f5c542" stroke="#b38a1c" stroke-width="3"/><circle cx="166" cy="50" r="12" fill="#f5c542" stroke="#b38a1c" stroke-width="3"/></svg>';
+const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const mixed = a => shuffle(a.slice());
+
+/* ---------- 種目ごとの問題 ----------
+ * generate(level) の返り値:
+ *   { prompt: 画面の問い, say: 読み上げる文, stage: 問いの下の HTML,
+ *     choices: [{ html, val, label }], answer: 正解の val }
+ * きおく だけは選択肢形式ではないので start(level) で自分の画面を作る。
+ */
+const KANA_ALL = 'あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわん'.split(
+  ''
+);
+const KANA_EASY = 'あいうくこしつてとのへもりんけ'.split('');
+// 形が似ていて取りちがえやすい組（もじ★3 で同じ問題に並べる）
+const KANA_TRICKY = [
+  ['ぬ', 'め'],
+  ['わ', 'ね', 'れ'],
+  ['さ', 'ち'],
+  ['る', 'ろ'],
+  ['は', 'ほ', 'ま'],
+  ['い', 'り'],
+  ['き', 'さ'],
+  ['あ', 'お', 'め'],
+  ['く', 'へ'],
+  ['こ', 'い'],
+  ['ゆ', 'よ']
+];
+const DRILLS = {
+  // かず ★1: 十の枠の ● を数える（1〜5） ★2: 1〜10 ★3: 大きい数は どっち
+  kazu(level) {
+    if (level < 3) {
+      const max = level === 1 ? 5 : 10,
+        n = ri(1, max),
+        opts = new Set([n]);
+      // まちがい選択肢は正解の ±1〜2（近い数を見分けさせる）
+      while (opts.size < 3) {
+        const d = n + pick([-2, -1, 1, 2]);
+        if (d >= 1 && d <= max) opts.add(d);
+      }
+      return {
+        prompt: 'いくつ あるかな？',
+        say: 'いくつ あるかな',
+        stage: tenFrame(n),
+        choices: mixed([...opts]).map(v => ({ html: `<span class="num">${v}</span>`, val: v, label: String(v) })),
+        answer: n
+      };
+    }
+    const a = ri(1, 10);
+    let b;
+    do b = ri(1, 10);
+    while (b === a);
+    return {
+      prompt: 'おおきい かずは どっち？',
+      say: 'おおきい かずは どっちかな',
+      stage: '',
+      choices: [a, b].map(v => ({ html: `<span class="num">${v}</span>`, val: v, label: String(v) })),
+      answer: Math.max(a, b)
+    };
+  },
+  // もじ: 読み上げた ひらがな1文字を選ぶ ★1: 形のかんたんな字から3択 ★2: 清音すべてから4択 ★3: まぎらわしい字をまぜた4択
+  moji(level) {
+    let ans, opts;
+    if (level === 1) {
+      ans = pick(KANA_EASY);
+      opts = new Set([ans]);
+      while (opts.size < 3) opts.add(pick(KANA_EASY));
+    } else if (level === 2) {
+      ans = pick(KANA_ALL);
+      opts = new Set([ans]);
+      while (opts.size < 4) opts.add(pick(KANA_ALL));
+    } else {
+      const g = pick(KANA_TRICKY);
+      ans = pick(g);
+      opts = new Set(g);
+      while (opts.size < 4) opts.add(pick(KANA_ALL));
+    }
+    return {
+      prompt: 'きこえた もじは どれ？',
+      say: `${ans}。 ${ans} は どれかな`,
+      stage: '',
+      choices: mixed([...opts]).map(v => ({ html: `<span class="kana">${v}</span>`, val: v, label: v })),
+      answer: ans
+    };
+  },
+  // かたち ★1: お手本と おなじ かたち ★2: いろも かたちも おなじ ★3: ひとつだけ かたちが ちがう
+  katachi(level) {
+    if (level === 1) {
+      const t = pick(SHAPES),
+        c = pick(SHAPE_COLORS),
+        opts = [t];
+      while (opts.length < 3) {
+        const s = pick(SHAPES);
+        if (!opts.includes(s)) opts.push(s);
+      }
+      return {
+        prompt: 'おなじ かたちは どれ？',
+        say: 'おなじ かたちは どれかな',
+        stage: `<div class="target">${shapeSvg(t, c)}</div>`,
+        choices: mixed(opts).map(s => ({ html: shapeSvg(s, c), val: s, label: SHAPE_NAME[s] })),
+        answer: t
+      };
+    }
+    if (level === 2) {
+      const t = pick(SHAPES),
+        c = pick(SHAPE_COLORS);
+      let c2, s2, s3;
+      do c2 = pick(SHAPE_COLORS);
+      while (c2 === c);
+      do s2 = pick(SHAPES);
+      while (s2 === t);
+      do s3 = pick(SHAPES);
+      while (s3 === t || s3 === s2);
+      // 正解 / 形は同じで色ちがい / 色は同じで形ちがい / どちらもちがう
+      const set = [
+        [t, c],
+        [t, c2],
+        [s2, c],
+        [s3, pick(SHAPE_COLORS)]
+      ];
+      return {
+        prompt: 'いろも かたちも おなじは どれ？',
+        say: 'いろも かたちも おなじなのは どれかな',
+        stage: `<div class="target">${shapeSvg(t, c)}</div>`,
+        choices: mixed(set).map(([s, k]) => ({ html: shapeSvg(s, k), val: s + k, label: SHAPE_NAME[s] })),
+        answer: t + c
+      };
+    }
+    const base = pick(SHAPES);
+    let odd;
+    do odd = pick(SHAPES);
+    while (odd === base);
+    const items = [base, base, base, odd].map((s, id) => ({ s, c: pick(SHAPE_COLORS), id }));
+    return {
+      prompt: 'かたちが ひとつだけ ちがうのは どれ？',
+      say: 'かたちが ひとつだけ ちがうのは どれかな',
+      stage: '',
+      choices: mixed(items).map(x => ({ html: shapeSvg(x.s, x.c), val: x.id, label: SHAPE_NAME[x.s] })),
+      answer: 3 // items の4番目（odd）
+    };
+  }
+};
+
+/* ---------- 進行 ---------- */
+// timers: ゲーム内時間の予約。up/down: この試合での一発正解・つまずきの連続数（レベル調整用）
+const DR = { q: null, misses: 0, lock: true, timers: [], up: 0, down: 0, seq: [], input: [], showing: false };
+function dLater(fn, s) {
+  DR.timers.push({ t: s, fn });
+}
+function drillUpdate(dt) {
+  for (const x of DR.timers.slice()) {
+    x.t -= dt;
+    if (x.t <= 0) {
+      DR.timers.splice(DR.timers.indexOf(x), 1);
+      x.fn();
+    }
+  }
+}
+function drillReset() {
+  Object.assign(DR, { q: null, misses: 0, lock: true, timers: [], up: 0, down: 0, showing: false });
+}
+const isDrill = () => KID.kind && KID.kind !== 'yomu';
+function setPrompt(t) {
+  $('#dPrompt').textContent = t;
+}
+function setFb(t) {
+  $('#dFb').textContent = t;
+}
+function drillAsk() {
+  DR.misses = 0;
+  DR.lock = false;
+  DR.timers = [];
+  KID.state = 'ask';
+  KID.t = 0;
+  KID.word = { w: '', e: '' };
+  setFb('');
+  const lv = DP(KID.kind).level;
+  if (KID.kind === 'kioku') kiokuStart(lv);
+  else {
+    const q = (DR.q = DRILLS[KID.kind](lv));
+    setPrompt(q.prompt);
+    $('#dStage').innerHTML = q.stage;
+    const box = $('#dChoices');
+    box.className = 'n' + q.choices.length;
+    box.innerHTML = '';
+    q.choices.forEach(c => {
+      const b = document.createElement('button');
+      b.className = 'dch';
+      b.innerHTML = c.html;
+      b.setAttribute('aria-label', c.label);
+      b.addEventListener('click', () => drillChoose(b, c.val));
+      box.appendChild(b);
+    });
+    say(q.say);
+  }
+  $('#kid').classList.add('ask');
+}
+function drillChoose(btn, val) {
+  if (DR.lock || KID.state !== 'ask' || mode !== 'play') return;
+  if (val === DR.q.answer) {
+    btn.classList.add('ok');
+    drillCorrect();
+    return;
+  }
+  btn.classList.add('no');
+  btn.disabled = true;
+  drillWrong(() =>
+    [...$('#dChoices').children].forEach((b, i) => {
+      if (DR.q.choices[i].val === DR.q.answer) b.classList.add('hint');
+    })
+  );
+}
+function drillCorrect() {
+  DR.lock = true;
+  const first = DR.misses === 0;
+  record(first);
+  if (!first) KID.streak = 0; // 必殺技は「一発正解」が3回つづいたときだけ
+  setFb(first ? 'すごい！ せいかい！' : 'せいかい！');
+  onCorrect();
+}
+/** まちがい。規定回数で答えを見せて次へ（体力は減らさない）。答えを見せたら true */
+function drillWrong(reveal) {
+  DR.misses++;
+  AU.tn(392, 0.16, 'sine', 0.15, 392);
+  AU.tn(330, 0.22, 'sine', 0.15, 330, 0.16);
+  if (DR.misses >= DRILL_CFG.missReveal) {
+    DR.lock = true;
+    record(false);
+    reveal();
+    setFb('こたえは これだよ。つぎ がんばろう！');
+    say('こたえは これだよ');
+    dLater(drillSkip, DRILL_CFG.revealT);
+    return true;
+  }
+  setFb('おしい！ もういちど！');
+  say('おしい！ もういちど');
+  return false;
+}
+function drillSkip() {
+  if (KID.state !== 'ask') return;
+  KID.ng.push(KID.word);
+  KID.streak = 0;
+  hideCard();
+  KID.state = 'wait';
+  KID.delay = 0.6;
+}
+/** 1問ごとの記録と、自動のレベル調整（試合中に上下したら技の強さも変える） */
+function record(firstTry) {
+  const p = DP(KID.kind);
+  p.tries++;
+  if (firstTry) {
+    p.firstOk++;
+    DR.up++;
+    DR.down = 0;
+  } else {
+    DR.up = 0;
+    DR.down++;
+  }
+  if (DR.up >= DRILL_CFG.upStreak && p.level < DRILL_CFG.levelMax) {
+    p.level++;
+    DR.up = 0;
+    addBanner('レベルアップ!', stars(p.level), 1.4, 'small');
+  } else if (DR.down >= DRILL_CFG.downMiss && p.level > 1) {
+    p.level--;
+    DR.down = 0;
+  }
+  KID.lv = DRILL_LV[p.level];
+  saveDrill();
+}
+/** 一時停止から戻ったとき：問いを読み直す（きおくはお手本を見せ直す） */
+function drillResume() {
+  if (!isDrill() || KID.state !== 'ask') return;
+  if (KID.kind === 'kioku') {
+    if (DR.showing) {
+      DR.timers = [];
+      kiokuShow(false);
+    }
+  } else if (DR.q && !DR.lock) say(DR.q.say);
+}
+function drillSayAgain() {
+  if (!isDrill() || KID.state !== 'ask') return;
+  if (KID.kind === 'kioku') {
+    if (!DR.showing && !DR.lock) say('おなじ じゅんばんに タッチ');
+  } else if (DR.q) say(DR.q.say);
+}
+
+/* ---------- きおく：色のボタンが順番に光る → 同じ順番でタッチ ----------
+ * 苦手な子が多い。むずかしくするときは len を急に増やさず、pads（色の数）→ len の順に1つずつ上げる。
+ */
+const PADS = [
+  { color: '#e5484d', shape: 'maru', name: 'あか' },
+  { color: '#3d7bfd', shape: 'sankaku', name: 'あお' },
+  { color: '#f5c542', shape: 'hoshi', name: 'きいろ' },
+  { color: '#3ecf8e', shape: 'shikaku', name: 'みどり' }
+];
+const PAD_HZ = [392, 494, 587, 698]; // 各ボタンの音（ソ・シ・レ・ファ）
+// pads＝色の数, len＝覚える数, gap＝光る間隔(秒)。★1 は直前につまずいていたら1こに下げる（成功体験を優先）
+function kiokuSettings(level) {
+  if (level === 1) return { pads: 3, len: DR.down >= 1 ? 1 : 2, gap: 1.2 };
+  if (level === 2) return { pads: 4, len: 2, gap: 1.1 };
+  return { pads: 4, len: 3, gap: 1.0 };
+}
+function kiokuStart(level) {
+  const cfg = (DR.cfg = kiokuSettings(level));
+  // 同じ色は続けて出さない（5歳には「あか・あか」が特にむずかしいため）
+  DR.seq = [];
+  while (DR.seq.length < cfg.len) {
+    const r = ri(0, cfg.pads - 1);
+    if (r !== DR.seq[DR.seq.length - 1]) DR.seq.push(r);
+  }
+  DR.q = null;
+  const box = $('#dChoices');
+  box.className = 'pads n' + cfg.pads;
+  box.innerHTML = '';
+  PADS.slice(0, cfg.pads).forEach((p, i) => {
+    const b = document.createElement('button');
+    b.className = 'dch pad';
+    b.style.background = p.color;
+    b.innerHTML = shapeSvg(p.shape, 'rgba(255,255,255,.85)');
+    b.setAttribute('aria-label', p.name);
+    b.addEventListener('click', () => kiokuTap(i));
+    box.appendChild(b);
+  });
+  kiokuShow(false);
+}
+function kiokuPads(on) {
+  [...$('#dChoices').children].forEach(b => (b.disabled = !on));
+}
+function kiokuFlash(i, s = 0.42) {
+  const b = $('#dChoices').children[i];
+  if (!b) return;
+  b.classList.add('lit');
+  AU.tn(PAD_HZ[i], 0.36, 'triangle', 0.2, PAD_HZ[i]);
+  dLater(() => b.classList.remove('lit'), s);
+}
+function kiokuDots() {
+  $('#dStage').innerHTML =
+    '<div class="seqdots" aria-hidden="true">' +
+    DR.seq.map((_, k) => `<span class="${k < DR.input.length ? 'on' : ''}"></span>`).join('') +
+    '</div>';
+}
+// お手本を見せる。slow＝まちがえた後の、よりゆっくりな再生
+function kiokuShow(slow) {
+  DR.input = [];
+  DR.lock = true;
+  DR.showing = true;
+  kiokuPads(false);
+  kiokuDots();
+  setPrompt(`ひかる じゅんばんを よく みてね（${DR.seq.length}こ）`);
+  say('よく みてね');
+  const gap = DR.cfg.gap + (slow ? 0.4 : 0);
+  DR.seq.forEach((i, k) =>
+    dLater(() => {
+      kiokuFlash(i, gap * 0.7);
+      say(PADS[i].name);
+    }, 1.5 + k * gap)
+  );
+  dLater(() => {
+    setPrompt('おなじ じゅんばんに タッチ！');
+    say('おなじ じゅんばんに タッチ');
+    DR.lock = false;
+    DR.showing = false;
+    kiokuPads(true);
+  }, 1.5 + DR.seq.length * gap + 0.2);
+}
+function kiokuTap(i) {
+  if (DR.lock || KID.state !== 'ask' || mode !== 'play') return;
+  kiokuFlash(i, 0.25);
+  if (DR.seq[DR.input.length] === i) {
+    DR.input.push(i);
+    kiokuDots();
+    if (DR.input.length === DR.seq.length) drillCorrect();
+    return;
+  }
+  const gaveUp = drillWrong(() => {
+    // 答えを見せる：正しい順番をゆっくり光らせる
+    kiokuPads(false);
+    setPrompt('こたえは こうだよ');
+    DR.seq.forEach((j, k) =>
+      dLater(() => {
+        kiokuFlash(j, 0.45);
+        say(PADS[j].name);
+      }, 0.3 + k * 0.6)
+    );
+  });
+  if (!gaveUp) {
+    DR.lock = true;
+    setFb('おしい！ もういちど ゆっくり みてね');
+    dLater(() => kiokuShow(true), 0.9);
+  }
+}
+/** テスト用：今の問題に正しく（ok=false なら まちがえて）答える */
+function drillAnswer(ok = true) {
+  if (DR.lock || KID.state !== 'ask') return false;
+  if (KID.kind === 'kioku') {
+    const want = DR.seq[DR.input.length];
+    kiokuTap(ok ? want : (want + 1) % DR.cfg.pads);
+    return true;
+  }
+  const btns = [...$('#dChoices').children],
+    i = DR.q.choices.findIndex((c, k) => (c.val === DR.q.answer) === ok && !btns[k].disabled);
+  if (i < 0) return false;
+  btns[i].click();
+  return true;
+}
+$('#dSay').addEventListener('click', drillSayAgain);
 
 /* ---- js/13-match.js ---- */
 /* ================= match flow ================= */
@@ -5216,7 +6087,7 @@ function newMatch(pi, ci, lv, isDemo, kid) {
   P1 = a;
   CPU = b;
   addBanner(
-    isDemo ? 'DEMO' : kid ? 'ひらがなプロレス' : '1本勝負',
+    isDemo ? 'DEMO' : kid ? 'りくの とっくん' : '1本勝負',
     kanaUI() ? `${a.def.kana}　VS　${b.def.kana}` : `${a.def.name}　VS　${b.def.name}`,
     1.7,
     'intro'
@@ -5582,7 +6453,7 @@ function drawHUD() {
     g.textAlign = 'center';
     g.textBaseline = 'middle';
     g.fillStyle = '#fff';
-    g.fillText('よめた かず', W / 2, top + bh * 1.75);
+    g.fillText(KID.kind === 'yomu' ? 'よめた かず' : 'せいかい', W / 2, top + bh * 1.75);
     for (let i = 0; i < 3; i++) {
       const cx = W / 2 + (i - 1) * 16 * U,
         cy = top + bh * 2.45;
@@ -5777,9 +6648,11 @@ function drawBanners() {
 const screens = ['title', 'select', 'result', 'pause', 'howto'];
 let howFrom = null,
   kidLv = 1,
-  kidLimit = 0;
+  kidLimit = 0,
+  selKind = 'yomu';
 try {
   kidLv = +(localStorage.getItem('bk_lv') || 1) || 1;
+  selKind = kindOf(localStorage.getItem('bk_kind')).id;
 } catch (e) {}
 function show(id) {
   for (const s of screens) $('#' + s).hidden = s !== id;
@@ -5829,10 +6702,34 @@ function buildCards() {
     });
     lv.appendChild(b);
   }
+  renderKinds();
   requestAnimationFrame(() => {
     drawPortraits();
     markCards();
   });
+}
+// 「なにで たたかう？」の種目ボタン（ベルト数・レベルは試合のたびに変わるので毎回作り直す）
+function renderKinds() {
+  const box = $('#kinds');
+  box.innerHTML = '<span class="lbl">なにで<br />たたかう？</span>';
+  for (const K of KINDS) {
+    const b = document.createElement('button'),
+      p = K.id === 'yomu' ? null : DP(K.id);
+    b.className = 'kb';
+    b.dataset.k = K.id;
+    b.innerHTML = `<b>${K.name}</b><span>${K.sub}</span><i>${
+      p ? `${stars(p.level)} ベルト${p.belts}` : 'レベルを えらぶ'
+    }</i>`;
+    b.addEventListener('click', () => {
+      AU.ui();
+      selKind = K.id;
+      try {
+        localStorage.setItem('bk_kind', K.id);
+      } catch (e) {}
+      markCards();
+    });
+    box.appendChild(b);
+  }
 }
 function drawPortraits() {
   if (!T3.r) return;
@@ -5915,6 +6812,18 @@ function markCards() {
   document
     .querySelectorAll('#lim button')
     .forEach(el => el.classList.toggle('on', +el.dataset.t === kidLimit));
+  document.querySelectorAll('.kb').forEach(el => el.classList.toggle('on', el.dataset.k === selKind));
+  // よむ以外はレベルが自動で変わり、時間制限もない
+  const drill = selKind !== 'yomu';
+  $('#levels').hidden = drill;
+  $('#lim').style.visibility = drill ? 'hidden' : '';
+  $('#dinfo').hidden = !drill;
+  if (drill) {
+    const p = DP(selKind);
+    $('#dinfo').innerHTML = `<b>${kindOf(selKind).name}</b>　いまの レベル <em>${stars(
+      p.level
+    )}</em>　ベルト ${p.belts}こ<small>レベルは じどうで かわるよ。まちがえても だいじょうぶ!</small>`;
+  }
 }
 function toTitle() {
   mode = 'title';
@@ -5934,7 +6843,10 @@ function toSelect() {
   show('select');
   if (!demo) startDemo();
   if (!$('#cards').children.length) buildCards();
-  else drawPortraits();
+  else {
+    renderKinds();
+    drawPortraits();
+  }
   markCards();
 }
 function startGame() {
@@ -5946,7 +6858,8 @@ function startGame() {
   if (c >= selP) c++;
   selC = c;
   newMatch(selP, selC, 1, false, true);
-  kidStart(kidLv, kidLimit);
+  if (selKind === 'yomu') kidStart(kidLv, kidLimit);
+  else kidStart(DRILL_LV[DP(selKind).level], 0, selKind);
 }
 function showResult() {
   const w = M.winner,
@@ -5954,10 +6867,24 @@ function showResult() {
   stopListen();
   hideCard();
   $('#rWin').textContent = win ? 'かち!' : 'まけちゃった…';
-  $('#rHow').textContent = `よめた ことば ${KID.ok.length}こ`;
-  $('#rWords').innerHTML =
-    KID.ok.map(x => `<span class="chip">${x.e} ${x.w}</span>`).join('') +
-    KID.ng.map(x => `<span class="chip ng">${x.e} ${x.w}</span>`).join('');
+  if (KID.kind === 'yomu') {
+    $('#rHow').textContent = `よめた ことば ${KID.ok.length}こ`;
+    $('#rWords').innerHTML =
+      KID.ok.map(x => `<span class="chip">${x.e} ${x.w}</span>`).join('') +
+      KID.ng.map(x => `<span class="chip ng">${x.e} ${x.w}</span>`).join('');
+  } else {
+    // 種目は勝つとベルトが1こ増える
+    const K = kindOf(KID.kind),
+      p = DP(K.id);
+    if (win) {
+      p.belts++;
+      saveDrill();
+    }
+    $('#rHow').textContent = `${K.name}　せいかい ${KID.ok.length}もん`;
+    $('#rWords').innerHTML = `<span class="belt">${BELT_SVG}</span><span class="chip">${K.name}の ベルト ${p.belts}こ　${stars(
+      p.level
+    )}</span>`;
+  }
   $('#rTime').textContent = win ? 'すごい! チャンピオンだ!' : 'つぎは きっと かてるよ!';
   mode = 'result';
   $('#kid').hidden = true;
@@ -5974,11 +6901,40 @@ function pause(on) {
     mode = 'play';
     show(null);
     autoListen();
+    drillResume();
   }
 }
 function openHow() {
   howFrom = screens.find(s => !$('#' + s).hidden) || null;
+  renderRecs();
   show('howto');
+}
+// おうちのかたへ：種目ごとの記録と、記録の消去（confirm() はアーティファクトで使えないので画面内で確認）
+function renderRecs() {
+  let rows = '';
+  for (const K of KINDS) {
+    if (K.id === 'yomu') continue;
+    const p = DP(K.id),
+      rate = p.tries ? Math.round((p.firstOk / p.tries) * 100) + '%' : '—';
+    rows += `<tr><td>${K.name}（${K.skill}）</td><td>${p.level}</td><td>${p.tries}</td><td>${rate}</td><td>${p.belts}</td></tr>`;
+  }
+  $('#recs tbody').innerHTML = rows;
+  resetUI();
+}
+function resetUI() {
+  const box = $('#resetBox');
+  box.innerHTML = '<button class="ghost" id="resetAsk">記録を消す</button>';
+  $('#resetAsk').onclick = () => {
+    box.innerHTML =
+      '<span>かず・もじ・かたち・きおくのレベル・ベルト・記録をすべて消しますか？</span><button class="ghost danger" id="resetYes">消す</button><button class="ghost" id="resetNo">やめる</button>';
+    $('#resetYes').onclick = () => {
+      drillProg = {};
+      saveDrill();
+      renderRecs();
+      if ($('#cards').children.length) renderKinds();
+    };
+    $('#resetNo').onclick = resetUI;
+  };
 }
 $('#startBtn').addEventListener('click', () => {
   AU.init();
@@ -6075,6 +7031,11 @@ function boot() {
       onMiss,
       DIR,
       runAction,
+      kidStart,
+      drillAnswer,
+      DR,
+      DP,
+      DRILL_LV,
       VOICE,
       get P1() {
         return P1;
@@ -6091,5 +7052,5 @@ function boot() {
 window.claude?.hot?.ready ? window.claude.hot.ready(boot) : boot();
 
 })();
-</script>                                                                  </body>
+</script>                                                                      </body>
 </html>
